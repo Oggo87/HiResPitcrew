@@ -9,6 +9,10 @@ This DLL finally overcomes this limitation, allowing pitcrew high resolution pit
 
 ## Getting Started
 
+### Dependencies
+
+* [GP4MemLib](https://github.com/Oggo87/GP4MemLib)
+
 ### Prerequisites
 
 * Grand Prix 4

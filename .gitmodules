@@ -1,0 +1,3 @@
+[submodule "GP4MemLib"]
+	path = GP4MemLib
+	url = http://github.com/Oggo87/GP4MemLib

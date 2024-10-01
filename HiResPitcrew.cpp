@@ -1,42 +1,12 @@
+#include "GP4MemLib/GP4MemLib.h"
 #include <iomanip>
 #include <malloc.h>
 #include <sstream>
 #include <string>
 #include <windows.h>
+
 using namespace std;
-
-string dwordToString(DWORD address) {
-
-	ostringstream outputString;
-
-	outputString.str(string());
-	outputString << "0x" << hex << setw(sizeof(DWORD) * 2) << setfill('0') << address;
-
-	return outputString.str();
-
-}
-
-string ptrToString(LPVOID address) {
-
-	return dwordToString(PtrToUlong(address));
-}
-
-void PatchAddress(LPVOID address, BYTE* patch, SIZE_T size) {
-	DWORD oldProtect;
-
-	string addressString = ptrToString(address);
-
-	if (VirtualProtect(address, size, PAGE_EXECUTE_READWRITE, &oldProtect)) {
-
-		memcpy(address, patch, size);
-		VirtualProtect(address, size, oldProtect, &oldProtect);
-
-		OutputDebugStringA(("Memory patched successfully at address " + addressString + "\n").c_str());
-	}
-	else {
-		OutputDebugStringA(("Error while patching address " + addressString + "\n").c_str());
-	}
-}
+using namespace GP4MemLib;
 
 DWORD WINAPI MainThread(LPVOID param) {
 
@@ -63,12 +33,12 @@ DWORD WINAPI MainThread(LPVOID param) {
 	OutputDebugStringA(("Address of new Vertex Buffer: " + outputString.str() + "\n").c_str());
 
 	//Patch exe for new vertex buffer
-	PatchAddress((LPVOID)0x004F929A, (BYTE*)&pitcrewVertexBuffer, sizeof(pitcrewVertexBuffer));
-	PatchAddress((LPVOID)0x004F92F5, (BYTE*)&pitcrewVertexBuffer, sizeof(pitcrewVertexBuffer));
+	MemUtils::patchAddress((LPVOID)0x004F929A, (BYTE*)&pitcrewVertexBuffer, sizeof(pitcrewVertexBuffer));
+	MemUtils::patchAddress((LPVOID)0x004F92F5, (BYTE*)&pitcrewVertexBuffer, sizeof(pitcrewVertexBuffer));
 	pitcrewVertexBuffer += 4;
-	PatchAddress((LPVOID)0x004F92FE, (BYTE*)&pitcrewVertexBuffer, sizeof(pitcrewVertexBuffer));
+	MemUtils::patchAddress((LPVOID)0x004F92FE, (BYTE*)&pitcrewVertexBuffer, sizeof(pitcrewVertexBuffer));
 	pitcrewVertexBuffer += 4;
-	PatchAddress((LPVOID)0x004F9307, (BYTE*)&pitcrewVertexBuffer, sizeof(pitcrewVertexBuffer));
+	MemUtils::patchAddress((LPVOID)0x004F9307, (BYTE*)&pitcrewVertexBuffer, sizeof(pitcrewVertexBuffer));
 
 	char* pitcrewNormalsBuffer = (char*)VirtualAlloc(NULL, 65536 * 4 * 3, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE);
 	if (!pitcrewNormalsBuffer) {
@@ -84,18 +54,18 @@ DWORD WINAPI MainThread(LPVOID param) {
 	OutputDebugStringA(("Address of new Normals Buffer: " + outputString.str() + "\n").c_str());
 
 	//Patch exe for new normals buffer
-	PatchAddress((LPVOID)0x004F92A1, (BYTE*)&pitcrewNormalsBuffer, sizeof(pitcrewNormalsBuffer));
-	PatchAddress((LPVOID)0x004F8187, (BYTE*)&pitcrewNormalsBuffer, sizeof(pitcrewNormalsBuffer));
-	PatchAddress((LPVOID)0x004F92D8, (BYTE*)&pitcrewNormalsBuffer, sizeof(pitcrewNormalsBuffer));
+	MemUtils::patchAddress((LPVOID)0x004F92A1, (BYTE*)&pitcrewNormalsBuffer, sizeof(pitcrewNormalsBuffer));
+	MemUtils::patchAddress((LPVOID)0x004F8187, (BYTE*)&pitcrewNormalsBuffer, sizeof(pitcrewNormalsBuffer));
+	MemUtils::patchAddress((LPVOID)0x004F92D8, (BYTE*)&pitcrewNormalsBuffer, sizeof(pitcrewNormalsBuffer));
 	pitcrewNormalsBuffer += 4;
-	PatchAddress((LPVOID)0x004F92E4, (BYTE*)&pitcrewNormalsBuffer, sizeof(pitcrewNormalsBuffer));
-	PatchAddress((LPVOID)0x004F81AB, (BYTE*)&pitcrewNormalsBuffer, sizeof(pitcrewNormalsBuffer));
+	MemUtils::patchAddress((LPVOID)0x004F92E4, (BYTE*)&pitcrewNormalsBuffer, sizeof(pitcrewNormalsBuffer));
+	MemUtils::patchAddress((LPVOID)0x004F81AB, (BYTE*)&pitcrewNormalsBuffer, sizeof(pitcrewNormalsBuffer));
 	pitcrewNormalsBuffer += 4;
-	PatchAddress((LPVOID)0x004F92ED, (BYTE*)&pitcrewNormalsBuffer, sizeof(pitcrewNormalsBuffer));
+	MemUtils::patchAddress((LPVOID)0x004F92ED, (BYTE*)&pitcrewNormalsBuffer, sizeof(pitcrewNormalsBuffer));
 
 	//Patch exe for larger D3D allocated memory space
 	int size = 0x10000000;
-	PatchAddress((LPVOID)0x004F2CA6, (BYTE*)&size, sizeof(int));
+	MemUtils::patchAddress((LPVOID)0x004F2CA6, (BYTE*)&size, sizeof(int));
 
 	return 0;
 }
