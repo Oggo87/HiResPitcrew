@@ -16,29 +16,24 @@ This DLL finally overcomes this limitation, allowing pitcrew high resolution pit
 ### Prerequisites
 
 * Grand Prix 4
-* CSM by ZaZ or GP4 Memory Access by Carl_gpgames
+* GP4 Memory Access by Carl_gpgames (recommended) or
+* CheatEngine or
+* Any other DLL injection tool
 
 ### Installing
 
 #### GP4 Memory Access
 
-* Add an entry pointing to `HiResPitcrew.dll`
-
-#### CSM
-
-* Copy `HiResPitcrew.dll` into your mod Data folder (or any of its subfolders of your choice)
-* In the main `.csm` file of you mod, `[Files]` section, add an entry to the `InjectDLL` key 
-  
-  Example: 
-  ```ini
-  InjectDll=Files\HiResPitcrew.dll
-  ```
+Under the *DLLs* tab, add an entry pointing to `HiResPitcrew.dll`. Make sure that `IndividualMeshesAndTextures.ini` is located in the same folder as the DLL.
 
 ## Authors
 
 Diego "Öggo" Noriega
 
 ## Version History
+
+* 1.0
+    * First Release
 
 * 0.1
     * Pre-Release
