@@ -64,13 +64,20 @@ DWORD WINAPI MainThread(LPVOID param) {
 	MemUtils::patchAddress((LPVOID)0x004F92ED, (BYTE*)&pitcrewNormalsBuffer, sizeof(pitcrewNormalsBuffer));
 
 	//Patch exe for larger D3D allocated memory space
-	int size = 0x10000000;
+	int size = 0x400000;//0x10000000;
 	MemUtils::patchAddress((LPVOID)0x004F2CA6, (BYTE*)&size, sizeof(int));
+
+	//Patch exe to avoid recursion CTD in AnimSetData::meth_0x4f2130
+	//It should really be converted to a non-recursive function
+	//but for now just patching the jump to always taken
+	byte jmp = 0xEB;
+	MemUtils::patchAddress((LPVOID)0x004F21B6, (BYTE*)&jmp, sizeof(byte));
 
 	return 0;
 }
 
 BOOL APIENTRY DllMain(HMODULE hModule, DWORD ul_reason_for_call, LPVOID lpReserved) {
+	OutputDebugStringA(("HiResPitrew: " + MemUtils::dwordToString(ul_reason_for_call)).c_str());
 	switch (ul_reason_for_call) {
 	case DLL_PROCESS_ATTACH:
 		CreateThread(NULL, 0, MainThread, NULL, 0, NULL);
